@@ -1,7 +1,7 @@
 {
   "name": "@usefultools/rabbit-mq",
   "version": "1.0.0",
-  "description": "A RabbitMQ client that's just betterer",
+  "description": "A RabbitMq client that's just betterer",
   "main": "./dist/main.js",
   "typings": "./dist/main.d.ts",
   "engines": {

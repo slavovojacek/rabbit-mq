@@ -1,4 +1,4 @@
-import { RabbitMq } from "../RabbitMQ"
+import { RabbitMq } from "../RabbitMq"
 
 export default new RabbitMq({
   url: "amqp://user:password@host/vhost",

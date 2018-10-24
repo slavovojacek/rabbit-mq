@@ -4,9 +4,9 @@
 [![GuardRails badge](https://badges.production.guardrails.io/litchi-io/rabbit-mq.svg)](https://www.guardrails.io)
 [![Security Responsible Disclosure](https://img.shields.io/badge/Security-Responsible%20Disclosure-yellow.svg)](https://github.com/litchi-io/rabbit-mq/blob/master/SECURITY.md)
 
-# RabbitMQ
+# RabbitMq
 
-A RabbitMQ client that's just betterer.
+A RabbitMq client that's just betterer.
 
 ## Prereqs & Install
 
