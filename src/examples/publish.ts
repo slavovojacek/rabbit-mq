@@ -13,7 +13,7 @@ const messages = [
 ]
 
 const publish = messages.map(({ routingKey, msg }) =>
-  client.publishOnTopicExchange(Exchange.Logs, routingKey, msg, {
+  client.publish(Exchange.Logs, routingKey, msg, {
     type: "task_to_process",
   }),
 )

@@ -44,7 +44,7 @@ class RabbitMq {
     return channel.assertExchange(name, type, opts)
   }
 
-  publishOnTopicExchange = async (
+  publish = async (
     exchangeName: string,
     routingKey: string,
     message: string,
