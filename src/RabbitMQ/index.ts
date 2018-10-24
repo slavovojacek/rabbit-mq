@@ -1,2 +1,2 @@
-export { default as RabbitMQ } from "./main"
+export { default as RabbitMq } from "./main"
 export * from "./types"

@@ -2,7 +2,7 @@ import { isMissing, isPositiveInteger, isPresent } from "@usefultools/utils"
 import { ConfirmChannel, connect, Connection, Message, Options, Replies } from "amqplib"
 import { ExchangeType, Opts } from "./types"
 
-class RabbitMQ {
+class RabbitMq {
   private connection: Connection | null
   private channel: ConfirmChannel | null
   private options: Options.Connect & Opts
@@ -127,4 +127,4 @@ class RabbitMQ {
   }
 }
 
-export default RabbitMQ
+export default RabbitMq

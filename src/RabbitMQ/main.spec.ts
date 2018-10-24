@@ -1,8 +1,8 @@
 import { connect, Options } from "amqplib"
-import RabbitMQ from "./main"
+import RabbitMq from "./main"
 import { Opts } from "./types"
 
-describe("RabbitMQ", () => {
+describe("RabbitMq", () => {
   const self: {
     opts: Options.Connect & Opts
     initConnection: typeof connect
@@ -13,7 +13,7 @@ describe("RabbitMQ", () => {
 
   beforeEach(() => {
     self.opts = {
-      url: "amqp://",
+      url: "amqp://user:password@host/vhost",
       onConnectionError: jest.fn(),
       onConnectionClose: jest.fn(),
       appId: "test",
@@ -33,15 +33,15 @@ describe("RabbitMQ", () => {
         createConfirmChannel: jest.fn(() => Promise.resolve("ConfirmChannel")),
       }
 
-      Object.assign(self.opts, { foo: "bar" })
+      Object.assign(self.opts, { heartbeat: 60 })
       self.initConnection = jest.fn(() => Promise.resolve(connection))
 
       const { opts, initConnection } = self
 
-      const rabbitMq = new RabbitMQ(opts, initConnection)
+      const rabbitMq = new RabbitMq(opts, initConnection)
       const channel = await rabbitMq.init()
 
-      expect(initConnection).toHaveBeenCalledWith(opts.url, { foo: "bar" })
+      expect(initConnection).toHaveBeenCalledWith(opts.url, { heartbeat: 60 })
 
       expect(channel).toEqual("ConfirmChannel")
 

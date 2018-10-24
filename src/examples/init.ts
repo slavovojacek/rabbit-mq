@@ -1,7 +1,7 @@
-import { RabbitMQ } from "../RabbitMQ"
+import { RabbitMq } from "../RabbitMQ"
 
-export default new RabbitMQ({
-  url: "",
+export default new RabbitMq({
+  url: "amqp://user:password@host/vhost",
   onConnectionError: (err) => {
     // tslint:disable-next-line:no-console
     console.log(`ERROR: ${err}`)
