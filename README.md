@@ -17,6 +17,7 @@ Please note that the **TypeScript target is ES6**.
 
 ```sh
 npm install @usefultools/rabbit-mq
+npm install @types/amqplib --save-dev # for TypeScript projects
 ```
 
 
