@@ -13,8 +13,6 @@ class RabbitMq {
     this.channel = null
     this.options = options
     this.initConnection = initConnection
-
-    // this.init()
   }
 
   getChannelOrFail = async (): Promise<ConfirmChannel> => {
@@ -55,8 +53,6 @@ class RabbitMq {
     const channel = await this.getChannelOrFail()
 
     return new Promise(async (resolve, reject) => {
-      await this.assertExchange(exchangeName, "topic", { durable: true })
-
       const options = {
         appId: this.options.appId,
         timestamp: Date.now(),
@@ -85,8 +81,6 @@ class RabbitMq {
   ): Promise<Replies.Consume> => {
     const channel = await this.getChannelOrFail()
 
-    await this.assertQueue(queueName, { durable: true })
-
     if (isPositiveInteger(prefetch)) {
       await channel.prefetch(prefetch)
     }
@@ -105,7 +99,7 @@ class RabbitMq {
   init = async (): Promise<ConfirmChannel | null> => {
     const {
       initConnection,
-      options: { url, onConnectionError, onConnectionClose, appId, ...opts },
+      options: { url, onConnectionError, onConnectionClose, appId: _appId, ...opts },
     } = this
 
     if (isMissing(this.connection) || isMissing(this.channel)) {
