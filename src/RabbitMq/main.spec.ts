@@ -39,7 +39,7 @@ describe("RabbitMq", () => {
       const { opts, initConnection } = self
 
       const rabbitMq = new RabbitMq(opts, initConnection)
-      const channel = await rabbitMq.init()
+      const channel = await rabbitMq.assertChannel()
 
       expect(initConnection).toHaveBeenCalledWith(opts.url, { heartbeat: 60 })
 

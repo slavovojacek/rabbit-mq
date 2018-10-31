@@ -16,7 +16,7 @@ class RabbitMq {
   }
 
   getChannelOrFail = async (): Promise<ConfirmChannel> => {
-    const channel = await this.init()
+    const channel = await this.assertChannel()
 
     if (isMissing(channel)) {
       throw new ReferenceError("No channel is established")
@@ -96,7 +96,7 @@ class RabbitMq {
     )
   }
 
-  init = async (): Promise<ConfirmChannel | null> => {
+  assertChannel = async (): Promise<ConfirmChannel | null> => {
     const {
       initConnection,
       options: { url, onConnectionError, onConnectionClose, appId: _appId, ...opts },
