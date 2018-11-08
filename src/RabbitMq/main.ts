@@ -25,6 +25,16 @@ class RabbitMq {
     }
   }
 
+  assertExchange = async (
+    name: string,
+    type: ExchangeType,
+    opts?: Options.AssertExchange,
+  ): Promise<Replies.AssertExchange> => {
+    const channel = await this.getChannelOrFail()
+
+    return channel.assertExchange(name, type, opts)
+  }
+
   assertQueue = async (
     name: string,
     opts?: Options.AssertQueue,
@@ -34,14 +44,14 @@ class RabbitMq {
     return channel.assertQueue(name, opts)
   }
 
-  assertExchange = async (
-    name: string,
-    type: ExchangeType,
-    opts?: Options.AssertExchange,
-  ): Promise<Replies.AssertExchange> => {
+  bindQueue = async (
+    queueName: string,
+    exchangeName: string,
+    pattern: string,
+  ): Promise<Replies.Empty> => {
     const channel = await this.getChannelOrFail()
 
-    return channel.assertExchange(name, type, opts)
+    return channel.bindQueue(queueName, exchangeName, pattern)
   }
 
   publish = async (
