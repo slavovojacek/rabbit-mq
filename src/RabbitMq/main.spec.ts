@@ -42,13 +42,7 @@ describe("RabbitMq", () => {
       const channel = await rabbitMq.assertChannel()
 
       expect(initConnection).toHaveBeenCalledWith(opts.url, { heartbeat: 60 })
-
       expect(channel).toEqual("ConfirmChannel")
-
-      const [onConnError, onConnClose] = connection.on.mock.calls
-
-      expect(onConnError).toEqual(["error", opts.onConnectionError])
-      expect(onConnClose).toEqual(["close", opts.onConnectionClose])
     })
   })
 })

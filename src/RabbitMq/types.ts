@@ -1,7 +1,8 @@
 export interface Opts {
   url: string
-  onConnectionError: (err: Error) => void
-  onConnectionClose: () => void
+  onConnectionError?: (err: Error) => void
+  onConnectionClose?: () => void
+  attemptReconnectAfterMs?: number
   appId: string
 }
 

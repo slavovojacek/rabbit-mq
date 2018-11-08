@@ -1,4 +1,4 @@
-import { isMissing, isPositiveInteger, isPresent } from "@usefultools/utils"
+import { isFunction, isMissing, isPositiveInteger, isPresent } from "@usefultools/utils"
 import { ConfirmChannel, connect, Connection, Message, Options, Replies } from "amqplib"
 import { ExchangeType, Opts } from "./types"
 
@@ -106,25 +106,43 @@ class RabbitMq {
     )
   }
 
-  assertChannel = async (): Promise<ConfirmChannel | null> => {
+  assertChannel = async (): Promise<ConfirmChannel> => {
     const {
       initConnection,
-      options: { url, onConnectionError, onConnectionClose, appId: _appId, ...opts },
+      options: {
+        attemptReconnectAfterMs,
+        url,
+        onConnectionError,
+        onConnectionClose,
+        appId: _appId,
+        ...opts
+      },
     } = this
 
     if (isMissing(this.connection) || isMissing(this.channel)) {
-      try {
-        this.connection = await initConnection(url, opts)
+      const timeout = isPositiveInteger(attemptReconnectAfterMs)
+        ? attemptReconnectAfterMs
+        : 2500
 
-        this.connection.on("error", onConnectionError)
-        this.connection.on("close", onConnectionClose)
+      this.connection = await initConnection(url, opts)
 
-        this.channel = await this.connection.createConfirmChannel()
-      } catch (err) {
-        onConnectionError(err)
+      this.connection.on("error", (error: Error) => {
+        setTimeout(this.assertChannel, timeout)
 
-        this.channel = null
-      }
+        if (isFunction(onConnectionError)) {
+          onConnectionError(error)
+        }
+      })
+
+      this.connection.on("close", () => {
+        setTimeout(this.assertChannel, timeout)
+
+        if (isFunction(onConnectionClose)) {
+          onConnectionClose()
+        }
+      })
+
+      this.channel = await this.connection.createConfirmChannel()
     }
 
     return this.channel
