@@ -5,4 +5,9 @@ export interface Opts {
   appId: string
 }
 
-export type ExchangeType = "direct" | "fanout" | "headers" | "topic"
+export enum ExchangeType {
+  Direct = "direct",
+  Fanout = "fanout",
+  Headers = "headers",
+  Topic = "topic",
+}
