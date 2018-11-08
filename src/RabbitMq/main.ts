@@ -112,7 +112,7 @@ class RabbitMq {
     )
   }
 
-  assertChannel = async (): Promise<ConfirmChannel> => {
+  assertChannel = async (): Promise<ConfirmChannel | null> => {
     const {
       initConnection,
       options: {
@@ -130,22 +130,29 @@ class RabbitMq {
         ? attemptReconnectAfterMs
         : 2500
 
-      this.connection = await initConnection(url, opts)
+      try {
+        this.connection = await initConnection(url, opts)
 
-      this.connection.on("error", onConnectionError)
+        this.connection.on("error", onConnectionError)
 
-      this.connection.on("close", () => {
+        this.connection.on("close", () => {
+          this.connection = null
+          this.channel = null
+
+          setTimeout(this.assertChannel, timeout)
+
+          if (isFunction(onConnectionClose)) {
+            onConnectionClose()
+          }
+        })
+
+        this.channel = await this.connection.createConfirmChannel()
+      } catch (err) {
         this.connection = null
         this.channel = null
 
         setTimeout(this.assertChannel, timeout)
-
-        if (isFunction(onConnectionClose)) {
-          onConnectionClose()
-        }
-      })
-
-      this.channel = await this.connection.createConfirmChannel()
+      }
     }
 
     return this.channel
