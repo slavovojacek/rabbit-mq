@@ -1,4 +1,10 @@
-import { isFunction, isMissing, isPositiveInteger, isPresent } from "@usefultools/utils"
+import {
+  isFunction,
+  isMissing,
+  isPositiveInteger,
+  isPresent,
+  noop,
+} from "@usefultools/utils"
 import { ConfirmChannel, connect, Connection, Message, Options, Replies } from "amqplib"
 import { ExchangeType, Opts } from "./types"
 
@@ -112,7 +118,7 @@ class RabbitMq {
       options: {
         attemptReconnectAfterMs,
         url,
-        onConnectionError,
+        onConnectionError = noop,
         onConnectionClose,
         appId: _appId,
         ...opts
@@ -126,15 +132,12 @@ class RabbitMq {
 
       this.connection = await initConnection(url, opts)
 
-      this.connection.on("error", (error: Error) => {
-        setTimeout(this.assertChannel, timeout)
-
-        if (isFunction(onConnectionError)) {
-          onConnectionError(error)
-        }
-      })
+      this.connection.on("error", onConnectionError)
 
       this.connection.on("close", () => {
+        this.connection = null
+        this.channel = null
+
         setTimeout(this.assertChannel, timeout)
 
         if (isFunction(onConnectionClose)) {
