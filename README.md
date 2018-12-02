@@ -22,7 +22,7 @@ npm install @types/amqplib --save-dev # for TypeScript projects
 
 ## Usage
 
-1) Create a Subscriber ⬇️
+### 1) Create a Subscriber ⬇️
 
 ```typescript
 const subscriber = new RabbitMq({
@@ -46,7 +46,7 @@ export { getSubscriber, setupSubsriber }
 
 ```
 
-2) Create a Publisher ⬆️
+### 2) Create a Publisher ⬆️
 
 ```typescript
 const publisher = new RabbitMq({
@@ -93,7 +93,7 @@ export { setupPublisher, getPublisher }
 
 ```
 
-3) Set up both the publisher and the subscriber upon service start 🔌
+### 3) Set up both the publisher and the subscriber upon service start 🔌
 
 ```typescript
 async function init(workerId: number = 0): Promise<void | never> {
@@ -112,7 +112,7 @@ async function init(workerId: number = 0): Promise<void | never> {
 
 ```
 
-4) Receive and process messages 😎
+### 4) Receive and process messages 😎
 
 ```typescript
 async function receive(): Promise<void> {
