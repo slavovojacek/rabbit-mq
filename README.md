@@ -25,6 +25,8 @@ npm install @types/amqplib --save-dev # for TypeScript projects
 #### 1) Create a Subscriber ⬇️
 
 ```typescript
+import { RabbitMq } from "@usefultools/rabbit-mq"
+
 const subscriber = new RabbitMq({
   url,
   onConnectionError: (err: Error) => log.error("Subscriber error", err.stack),
@@ -49,6 +51,8 @@ export { getSubscriber, setupSubsriber }
 #### 2) Create a Publisher ⬆️
 
 ```typescript
+import { RabbitMq } from "@usefultools/rabbit-mq"
+
 const publisher = new RabbitMq({
   url,
   onConnectionError: (err: Error) => log.error("Publisher error", err.stack),
