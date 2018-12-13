@@ -36,15 +36,11 @@ const subscriber = new RabbitMq({
 })
 
 async function setupSubsriber(): Promise<RabbitMq> {
-  return getSubscriber()
-}
-
-async function getSubscriber(): Promise<RabbitMq> {
   await subscriber.assertChannel()
   return subscriber
 }
 
-export { getSubscriber, setupSubsriber }
+export default setupSubsriber
 
 ```
 
@@ -61,7 +57,7 @@ const publisher = new RabbitMq({
   heartbeat: 15,
 })
 
-async function setupPublisher(): Promise<Array<Replies.Empty>> {
+async function setupPublisher(): Promise<RabbitMq> {
   const opts = {
     exchange: "logs",
     type: ExchangeType.Topic,
@@ -85,15 +81,12 @@ async function setupPublisher(): Promise<Array<Replies.Empty>> {
     return publisher.bindQueue(queue, opts.exchange, routingKey)
   })
 
-  return Promise.all(bindings)
-}
+  Promise.all(bindings)
 
-async function getPublisher(): Promise<RabbitMq> {
-  await publisher.assertChannel()
   return publisher
 }
 
-export { setupPublisher, getPublisher }
+export default setupPublisher
 
 ```
 
@@ -104,8 +97,9 @@ async function init(workerId: number = 0): Promise<void | never> {
   try {
     log.info(`${workerId} :: Initialising ${appId} ...`)
 
-    await Promise.all([setupSubsriber(), setupPublisher()])
-    await receive()
+    const [subscriber, publisher] = await Promise.all([setupSubsriber(), setupPublisher()])
+
+    await receive({ subscriber, publisher })
 
     log.info(`${workerId} :: ${appId} Running ...`)
   } catch (err) {
@@ -119,10 +113,7 @@ async function init(workerId: number = 0): Promise<void | never> {
 #### 4) Receive and process messages 😎
 
 ```typescript
-async function receive(): Promise<void> {
-  const subscriber = await getSubscriber()
-  const publisher = await getPublisher()
-
+async function receive({ subscriber, publisher }): Promise<void> {
   subscriber.subscribe("requests", (msg: Message, channel: ConfirmChannel) => {
     const ctx = buildContext(msg, publisher)
 
