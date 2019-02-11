@@ -19,6 +19,7 @@ describe("RabbitMq", () => {
       appId: "test",
       log: {
         info: (_msg: string) => null,
+        error: (_msg: string) => null,
       },
     }
     self.initConnection = jest.fn()

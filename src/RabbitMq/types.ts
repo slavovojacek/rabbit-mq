@@ -6,6 +6,7 @@ export interface Opts {
   appId: string
   log?: {
     info: (...args: Array<any>) => any
+    error: (...args: Array<any>) => any
   }
 }
 

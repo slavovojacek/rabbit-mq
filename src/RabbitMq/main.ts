@@ -152,11 +152,11 @@ class RabbitMq {
         this.channel = await this.connection.createConfirmChannel()
 
         log.info("🚀 Channel [type: Confirm] established")
-      } catch (err) {
+      } catch (error) {
         this.connection = null
         this.channel = null
 
-        log.info("😡 Failed to connect to RabbitMQ, retrying...")
+        log.error("😡 Failed to connect to RabbitMQ, retrying...", error)
 
         return new Promise((resolve) => {
           setTimeout(() => resolve(this.assertChannel()), timeoutMs)
