@@ -6,15 +6,18 @@ import {
   noop,
 } from "@usefultools/utils"
 import { ConfirmChannel, connect, Connection, Message, Options, Replies } from "amqplib"
-import { ExchangeType, Opts } from "./types"
+import { ExchangeType, RabbitMqInitOpts } from "./types"
 
 class RabbitMq {
   private connection: Connection | null
   private channel: ConfirmChannel | null
-  private options: Options.Connect & Opts
+  private options: Options.Connect & RabbitMqInitOpts
   private initConnection: typeof connect
 
-  constructor(options: Options.Connect & Opts, initConnection: typeof connect = connect) {
+  constructor(
+    options: Options.Connect & RabbitMqInitOpts,
+    initConnection: typeof connect = connect,
+  ) {
     this.connection = null
     this.channel = null
     this.options = options
@@ -121,7 +124,7 @@ class RabbitMq {
         onConnectionError = noop,
         onConnectionClose,
         appId: _appId,
-        log = console,
+        log,
         ...opts
       },
     } = this

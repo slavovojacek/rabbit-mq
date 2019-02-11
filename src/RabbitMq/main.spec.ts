@@ -1,10 +1,10 @@
 import { connect, Options } from "amqplib"
 import RabbitMq from "./main"
-import { Opts } from "./types"
+import { RabbitMqInitOpts } from "./types"
 
 describe("RabbitMq", () => {
   const self: {
-    opts: Options.Connect & Opts
+    opts: Options.Connect & RabbitMqInitOpts
     initConnection: typeof connect
   } = {
     opts: null!,
