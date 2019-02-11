@@ -17,6 +17,9 @@ describe("RabbitMq", () => {
       onConnectionError: jest.fn(),
       onConnectionClose: jest.fn(),
       appId: "test",
+      log: {
+        info: (_msg: string) => null,
+      },
     }
     self.initConnection = jest.fn()
   })
@@ -33,8 +36,13 @@ describe("RabbitMq", () => {
         createConfirmChannel: jest.fn(() => Promise.resolve("ConfirmChannel")),
       }
 
-      Object.assign(self.opts, { heartbeat: 60 })
-      self.initConnection = jest.fn(() => Promise.resolve(connection))
+      Object.assign(self, {
+        initConnection: jest.fn(() => Promise.resolve(connection)),
+        opts: {
+          ...self.opts,
+          heartbeat: 60,
+        },
+      })
 
       const { opts, initConnection } = self
 

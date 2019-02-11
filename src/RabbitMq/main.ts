@@ -121,16 +121,19 @@ class RabbitMq {
         onConnectionError = noop,
         onConnectionClose,
         appId: _appId,
+        log = console,
         ...opts
       },
     } = this
 
     if (isMissing(this.connection) || isMissing(this.channel)) {
-      const timeout = isPositiveInteger(attemptReconnectAfterMs)
+      const timeoutMs = isPositiveInteger(attemptReconnectAfterMs)
         ? attemptReconnectAfterMs
         : 2500
 
       try {
+        log.info("🔌 Connecting to RabbitMQ...")
+
         this.connection = await initConnection(url, opts)
 
         this.connection.on("error", onConnectionError)
@@ -139,7 +142,7 @@ class RabbitMq {
           this.connection = null
           this.channel = null
 
-          setTimeout(this.assertChannel, timeout)
+          setTimeout(() => this.assertChannel, timeoutMs)
 
           if (isFunction(onConnectionClose)) {
             onConnectionClose()
@@ -147,11 +150,17 @@ class RabbitMq {
         })
 
         this.channel = await this.connection.createConfirmChannel()
+
+        log.info("🚀 Channel [type: Confirm] established")
       } catch (err) {
         this.connection = null
         this.channel = null
 
-        setTimeout(this.assertChannel, timeout)
+        log.info("😡 Failed to connect to RabbitMQ, retrying...")
+
+        return new Promise((resolve) => {
+          setTimeout(() => resolve(this.assertChannel()), timeoutMs)
+        })
       }
     }
 

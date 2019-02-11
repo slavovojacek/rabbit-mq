@@ -9,7 +9,7 @@ prettier_executable=${node_bin}/prettier
 tsc_executable=${node_bin}/tsc
 tslint_executable=${node_bin}/tslint
 
-compile: format
+compile:
 	rm -rf ${dist_folder}
 	${tsc_executable} -p ${ts_config_file}
 

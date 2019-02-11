@@ -4,6 +4,9 @@ export interface Opts {
   onConnectionClose?: () => void
   attemptReconnectAfterMs?: number
   appId: string
+  log?: {
+    info: (...args: Array<any>) => any
+  }
 }
 
 export enum ExchangeType {
