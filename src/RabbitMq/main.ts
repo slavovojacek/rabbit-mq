@@ -154,7 +154,7 @@ class RabbitMq {
 
         this.channel = await this.connection.createConfirmChannel()
 
-        log.info("🚀 Channel [type: Confirm] established")
+        log.info("✅ Channel [type: Confirm] established")
       } catch (error) {
         this.connection = null
         this.channel = null
