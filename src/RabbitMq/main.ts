@@ -124,6 +124,7 @@ class RabbitMq {
         onConnectionError = noop,
         onConnectionClose,
         appId: _appId,
+        name,
         log,
         ...opts
       },
@@ -135,8 +136,6 @@ class RabbitMq {
         : 2500
 
       try {
-        log.info("🔌 Establishing RabbitMQ connection...")
-
         this.connection = await initConnection(url, opts)
 
         this.connection.on("error", onConnectionError)
@@ -154,12 +153,12 @@ class RabbitMq {
 
         this.channel = await this.connection.createConfirmChannel()
 
-        log.info("✅ Channel [type: Confirm] established")
+        log.info(`✅ Channel for ${name} established, type: Confirm...`)
       } catch (error) {
         this.connection = null
         this.channel = null
 
-        log.error("😢 Failed to establish RabbitMQ connection, retrying...", error)
+        log.error(`😢 Failed to establish channel for ${name}, retrying...`, error)
 
         return new Promise((resolve) => {
           setTimeout(() => resolve(this.assertChannel()), timeoutMs)

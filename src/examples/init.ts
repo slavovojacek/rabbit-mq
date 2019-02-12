@@ -11,5 +11,6 @@ export default new RabbitMq({
     console.log("CONNECTION CLOSED")
   },
   appId: "my-test-app",
+  name: "my-rabbitmq-client",
   log: console,
 })

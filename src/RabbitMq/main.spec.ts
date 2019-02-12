@@ -17,6 +17,7 @@ describe("RabbitMq", () => {
       onConnectionError: jest.fn(),
       onConnectionClose: jest.fn(),
       appId: "test",
+      name: "test-client",
       log: {
         info: (_msg: string) => null,
         error: (_msg: string) => null,
