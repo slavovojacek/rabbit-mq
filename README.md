@@ -33,6 +33,7 @@ async function setupSubsriber(): Promise<RabbitMq> {
     onConnectionError: (error) => log.error("Subscriber error", error),
     onConnectionClose: () => log.error("Subscriber connection closed"),
     appId,
+    name: "subscriber",
     log: console
   })
 
@@ -56,6 +57,7 @@ async function setupPublisher(): Promise<RabbitMq> {
     onConnectionError: (error) => log.error("Publisher error", error),
     onConnectionClose: () => log.error("Publisher connection closed"),
     appId,
+    name: "publisher",
     log: console
 })
 
