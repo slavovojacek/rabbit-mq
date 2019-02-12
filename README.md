@@ -27,17 +27,18 @@ npm install @types/amqplib --save-dev # for TypeScript projects
 ```typescript
 import { RabbitMq } from "@usefultools/rabbit-mq"
 
-const subscriber = new RabbitMq({
-  url,
-  onConnectionError: (err: Error) => log.error("Subscriber error", err.stack),
-  onConnectionClose: () => log.error("Subscriber connection closed"),
-  appId,
-  heartbeat: 15,
-})
-
 async function setupSubsriber(): Promise<RabbitMq> {
+  const subscriber = new RabbitMq({
+    url,
+    onConnectionError: (error) => log.error("Subscriber error", error),
+    onConnectionClose: () => log.error("Subscriber connection closed"),
+    appId,
+    log: console
+  })
+
   await subscriber.assertChannel()
-  return subscriber
+
+return subscriber
 }
 
 export default setupSubsriber
@@ -49,15 +50,15 @@ export default setupSubsriber
 ```typescript
 import { RabbitMq } from "@usefultools/rabbit-mq"
 
-const publisher = new RabbitMq({
-  url,
-  onConnectionError: (err: Error) => log.error("Publisher error", err.stack),
-  onConnectionClose: () => log.error("Publisher connection closed"),
-  appId,
-  heartbeat: 15,
+async function setupPublisher(): Promise<RabbitMq> {
+  const publisher = new RabbitMq({
+    url,
+    onConnectionError: (error) => log.error("Publisher error", error),
+    onConnectionClose: () => log.error("Publisher connection closed"),
+    appId,
+    log: console
 })
 
-async function setupPublisher(): Promise<RabbitMq> {
   const opts = {
     exchange: "logs",
     type: ExchangeType.Topic,
@@ -81,7 +82,7 @@ async function setupPublisher(): Promise<RabbitMq> {
     return publisher.bindQueue(queue, opts.exchange, routingKey)
   })
 
-  Promise.all(bindings)
+  await Promise.all(bindings)
 
   return publisher
 }
@@ -93,18 +94,21 @@ export default setupPublisher
 #### 3) Set up both the publisher and the subscriber upon service start 🔌
 
 ```typescript
-async function init(workerId: number = 0): Promise<void | never> {
+async function init(): Promise<void | never> {
   try {
-    log.info(`${workerId} :: Initialising ${appId} ...`)
+    log.info(`Starting ${appId}...`)
 
-    const [subscriber, publisher] = await Promise.all([setupSubsriber(), setupPublisher()])
+    const [subscriber, publisher] = await Promise.all([
+      setupSubsriber(),
+      setupPublisher()
+    ])
 
     await receive({ subscriber, publisher })
 
-    log.info(`${workerId} :: ${appId} Running ...`)
-  } catch (err) {
-    log.error(`Could not initialise ${appId}`, err.stack)
-    process.exit(1)
+    log.info(`Started ${appId}...`)
+  } catch (error) {
+    log.error(`Failed to start ${appId}...`, error)
+    return process.exit(1)
   }
 }
 

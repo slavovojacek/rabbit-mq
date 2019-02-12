@@ -135,7 +135,7 @@ class RabbitMq {
         : 2500
 
       try {
-        log.info("🔌 Connecting to RabbitMQ...")
+        log.info("🔌 Establishing RabbitMQ connection...")
 
         this.connection = await initConnection(url, opts)
 
@@ -159,7 +159,7 @@ class RabbitMq {
         this.connection = null
         this.channel = null
 
-        log.error("😡 Failed to connect to RabbitMQ, retrying...", error)
+        log.error("😢 Failed to establish RabbitMQ connection, retrying...", error)
 
         return new Promise((resolve) => {
           setTimeout(() => resolve(this.assertChannel()), timeoutMs)
@@ -168,6 +168,22 @@ class RabbitMq {
     }
 
     return this.channel
+  }
+
+  closeConnection = async (): Promise<boolean> => {
+    if (isMissing(this.connection) || isMissing(this.channel)) {
+      return true
+    } else {
+      try {
+        await this.channel.close()
+        await this.connection.close()
+
+        return true
+      } catch (error) {
+        this.options.log.error("😢 Failed to close connection...", error)
+        return false
+      }
+    }
   }
 }
 
